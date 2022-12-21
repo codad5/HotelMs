@@ -10,6 +10,18 @@
     price_tag = document.querySelector('#price_tag')
     let book_button = document.querySelectorAll('.bookbutton')
     var room_to_be_booked = null, __price = null;
+    class useDate extends Date{
+        today = null
+        constructor (date_ = null) {
+            super(date_)
+            this.today = new Date()
+        }
+        getNoOfDays(){
+            return Math.ceil((this.valueOf() - this.today.valueOf()) / (1000 * 60 * 60 * 24))  +1
+        }
+        
+        
+    }
 </script>
 
 {{-- //add room section --}}

@@ -7,7 +7,7 @@
             <li class="h-fit py-1"><a href="/admin" class="underline cursor-pointer text-slate-700">Home</a></li>
             <li class="h-fit py-1"><a href="/rooms/create" class="underline cursor-pointer text-slate-700">Rooms</a></li>
             <li class="h-fit py-1"><a href="/admin/bookings" class="underline cursor-pointer text-slate-700">Bookings</a></li>
-            <li class="h-fit py-1"><a href="/logout" class="underline cursor-pointer text-red-800">Logout</a></li>
+            <li class="h-fit py-1"><a href="/admin/logout" class="underline cursor-pointer text-red-800">Logout</a></li>
         </ul>
     </div>
 </div>

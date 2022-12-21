@@ -55,7 +55,6 @@
         </tbody>
     </table>
 </div>
-
 </section>
 
 
@@ -114,16 +113,5 @@
         $('#allrooms').load(`{{url('admin/allrooms')}}`)
     })
     })
-    class useDate extends Date{
-        today = null
-        constructor (date_ = null) {
-            super(date_)
-            this.today = new Date()
-        }
-        getNoOfDays(){
-            return Math.ceil((this.valueOf() - this.today.valueOf()) / (1000 * 60 * 60 * 24))  +1
-        }
-        
-        
-    }
+    
 </script>

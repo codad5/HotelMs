@@ -16,6 +16,21 @@ class AdminController extends Controller
             return redirect('/admin');
         return view('admin.allrooms', RoomController::getAllRooms());
     }
+    public function checkIn(Request $req)
+    {
+        if (!Auth::guard('admins')->check())
+            return redirect('/admin');
+        ['id' => $id, 'bypass' => $bypass] = $req->only('id', 'bypass');
+        try{
+            // $bypass = (bool) $bypass;
+            BookingController::checkIn($id, $bypass);
+            echo "Successfully Checked in";
+        }
+        catch(\Error $e){
+            echo $e->getMessage();
+            return false;
+        }
+    }
     public function book(Request $req)
     {
         if (!Auth::guard('admins')->check())
@@ -39,6 +54,8 @@ class AdminController extends Controller
     }
     public function showAllBookings()
     {
+        if (!Auth::guard('admins')->check())
+            return redirect('/admin');
         $bookings =  BookingController::getBookings();
         return view('admin.allbookings', ['bookings' => $bookings]);
     }

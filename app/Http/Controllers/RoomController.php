@@ -30,6 +30,10 @@ class RoomController extends Controller
     public function index()
     {
         //
+        $rooms = self::getAllRooms()['rooms'];
+        $actives = self::getAllRooms()['actives'];
+        
+        return view('client.room', ["rooms" => $rooms, "actives" => $actives]);
     }
 
     /**
