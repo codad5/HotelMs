@@ -27,13 +27,29 @@ class RoomController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        $rooms = self::getAllRooms()['rooms'];
-        $actives = self::getAllRooms()['actives'];
-        
-        return view('client.room', ["rooms" => $rooms, "actives" => $actives]);
+        $header = null;
+        $from = $request->query('from');
+        $to = $request->query('to');
+        $type = $request->query('type');
+        if($type == 'any') $type = null;
+        $rooms = BookingController::getAvaliableRoom($from, $to, $type);
+        if(!$rooms || (!isset($from) && !isset($to))){
+            $rooms = self::getAllRooms()['rooms'];
+            $actives = self::getAllRooms()['actives'];
+        }
+        else{
+            $rooms = self::MarkActiveRoom($rooms);
+            $actives = $rooms['actives'];
+            $rooms = $rooms['rooms'];
+            if(!$from) $from = date('Y-m-d');
+            $type = $type ? $type : 'Room(s)';
+            $header = "$type available from $from -> $to";
+        }
+
+        return view('client.room', ["rooms" => $rooms, "actives" => $actives, "header" => $header ?? 'Rooms']);
     }
 
     /**
@@ -48,12 +64,21 @@ class RoomController extends Controller
             return redirect('/admin/login');
         $rooms = self::getAllRooms()['rooms'];
         $actives = self::getAllRooms()['actives'];
-        
+
         return view('admin.room', ["rooms" => $rooms, "actives" => $actives]);
     }
-    public static function getAllRooms()
+    public static function getRoomByCat($cat = null)
+    {
+
+    }
+    public static function getAllRooms(): array
     {
         $rooms = Rooms::all();
+        return self::MarkActiveRoom($rooms);
+    }
+
+    public static function MarkActiveRoom($rooms): array
+    {
         $actives = [];
         foreach ($rooms as $room)
         {
@@ -85,11 +110,13 @@ class RoomController extends Controller
         $request->validate([
             'number' => 'required|int',
             'price' => 'required|int',
+            'type' => 'required'
         ]);
         [
             "number" => $number,
-            "price" => $price
-        ] = $request->only('number', 'price');
+            "price" => $price,
+            'type' => $type
+        ] = $request->only('number', 'price', 'type');
         try{
         if($number < 0) throw new Exception('Invalid number');
         if($price < 0) throw new Exception('Invalid price');
@@ -97,7 +124,7 @@ class RoomController extends Controller
             throw new Exception("Room with Number $number already exist");
         $room = new Rooms;
         $room->number = $number;
-        $room->room_type = '';
+        $room->room_type = $type;
         $room->price = $price;
         // dd(date('d-m-Y'));
         $room->booked_by = '';

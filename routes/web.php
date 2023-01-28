@@ -6,7 +6,7 @@ use App\http\Controllers\{AdminController, RoomController, BookingController, Us
 
 
 // clients route s
-Route::get('/', fn() => view('client.index'));
+Route::get('/', [UserController::class, 'index']);
 Route::get('/login', [UserController::class, 'loginForm']);
 Route::get('/signup', fn() => view('client.signup'));
 Route::post('/login', [UserController::class, 'login']);
