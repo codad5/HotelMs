@@ -1,40 +1,34 @@
-version: '3'
+version: '3.8'
 services:
-  app:
+  main:
     build:
-      context: ./
-      target: dev
+      context: .
+      dockerfile: Dockerfile
+    command: 'php artisan serve --host=0.0.0.0'
     volumes:
-      - .:/var/www/html
-      - .env.dev:/var/www/html/.env
+      - .:/app
     ports:
-      - "8082:80"
-    environment:
-      - APP_ENV=local
-      - APP_DEBUG=true
-    networks:
-      - laravel
+      - 8000:8000
     depends_on:
-      - mysql
-  mysql:
-    image: 'mysql/mysql-server:8.0'
+      - db
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: 'php artisan queue:work'
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
     environment:
-      MYSQL_ROOT_HOST: "%"
-      MYSQL_ROOT_PASSWORD: "root"
-      MYSQL_USER: "laravel"
-      MYSQL_PASSWORD: "FhgVoFuOrWspc3TgBIA2K4dZGuJTPwSYBoLnNckcaxy"
-      MYSQL_DATABASE: "laravel"
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
-    ports:
-      - 3906:3306
+      MYSQL_DATABASE: main
+      MYSQL_USER: admin
+      MYSQL_ROOT: admin
+      MYSQL_PASSWORD: admin
+      MYSQL_ROOT_PASSWORD: root
     volumes:
-      - 'mysql8:/var/lib/mysql'
-      - './db/init.sql:/docker-entrypoint-initdb.d/01init.sql'
-    networks:
-      - laravel
-networks:
-  laravel:
-    driver: bridge
-volumes:
-  mysql8:
-    driver: local
+      - ./storage/dbdata:/var/lib/mysql
+    ports:
+      - 3306:3306
