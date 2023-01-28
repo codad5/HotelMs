@@ -30,7 +30,7 @@
                     {{$room->number}} </td>
                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 text-slate-100"> {{$room->price}}
                 </td>
-                <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-100">Suite</td>
+                <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-100">{{$room->room_type}}</td>
                 <td class="border-b border-slate-100 dark:border-slate-700 p-4 pr-8 text-slate-100">
                     @if(!$room->booked)
                     <button class="bookbutton inline-flex justify-center rounded-md border border-transparent
@@ -113,5 +113,5 @@
         $('#allrooms').load(`{{url('admin/allrooms')}}`)
     })
     })
-    
+
 </script>

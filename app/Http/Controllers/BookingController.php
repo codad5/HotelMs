@@ -16,7 +16,7 @@ class BookingController extends Controller
     {
         // $men = null;
         // var_dump('testing', date("Y-m-d H:i:s", strtotime("11:59pm $men")));
-        
+
         if (strtotime("midnight") > strtotime("midnight $from") || strtotime("11:59pm") > strtotime("11:59pm $to"))
             throw new Error("Select a date later than today");
         if (!$from)
@@ -29,7 +29,7 @@ class BookingController extends Controller
         $booked = self::is_booked($num, $from, $to);
         if ($booked)
             throw new Error("Room $num is booked from ".$booked['from']." to ".$booked["to"]);
-        
+
         $booking = new Bookings;
         $booking->user = $user;
         $booking->room_number = $num;
@@ -48,25 +48,25 @@ class BookingController extends Controller
         return true;
 
     }
-    #TODO: fix this 
+    #TODO: fix this
     public static function is_booked($num, $from = null, $to = null, $must_pay = false)
     {
         #NOTE: $last_booking is the booking with the $last_booking->to time greater than $from
         /**
-         * Test Data set 
+         * Test Data set
          * Booking 0 = 7 - 9 can book
-         * Booking 1 = 13 - 15 // can book 
-         * Booking 2 = 17 - 20 //can book 
-         * Booking 3 = 24 - 28 //can book 
+         * Booking 1 = 13 - 15 // can book
+         * Booking 2 = 17 - 20 //can book
+         * Booking 3 = 24 - 28 //can book
          * Booking 4 = 16 - 19  // should say 'booked'
          */
         #POINTS:
         # 1. selecting booking that is not be expired yet and select the one with the shortest booking ending date , this is bescause this new booking will have a tendency of being between any booking period with expiring date (to) abd its starting date (to)  greater than this new booking date starting date (from)
-        # 2. So if the current booking ending date (to) is greater than the starting date of the last booking (from)  then this booking is inbetween the lastbooking and cant be booked 
+        # 2. So if the current booking ending date (to) is greater than the starting date of the last booking (from)  then this booking is inbetween the lastbooking and cant be booked
 
         #================= USING THE SAMPLES DATESABOVE=================
         #lets try the (4th) bokking thats our starting(from) is 3rd and ending(to) is 15
-        #From step (1) the 2rd booking will be selected because its the Lowest to period of ending date greater than this currenct booking starting date 
+        #From step (1) the 2rd booking will be selected because its the Lowest to period of ending date greater than this currenct booking starting date
         #From step(2) since the end date of the current bookinng period (19th) is greater than the starting date (13th) of the currenct booking period therefore the current booking period is enchrosing the last booking period therefore its 'booked'
         $last_booking = Bookings::where('room_number', $num)
                             ->where('to', '>', $from)
@@ -77,8 +77,8 @@ class BookingController extends Controller
         $l_from = date("Y-m-d", strtotime("midnight $last_booking->from"));
         $m_to = date("Y-m-d", strtotime("11:59pm $to"));
         $l_to = date("Y-m-d", strtotime("11:59pm $last_booking->to"));
-        
-        if ($m_from >= $l_from) return ['from' => $l_from, 'to' => $l_to]; # if the from date is in between the last start(from) and end(to) date its booked 
+
+        if ($m_from >= $l_from) return ['from' => $l_from, 'to' => $l_to]; # if the from date is in between the last start(from) and end(to) date its booked
         if ($m_to < $l_from) return false; #if the from and the to is lesser than the (last from and to )
         return ['from' => $l_from, 'to' => $l_to];
     }
@@ -138,5 +138,20 @@ class BookingController extends Controller
     public static function getBookings($room = null)
     {
         return $room ? Bookings::where('room_number', $room) : Bookings::all();
+    }
+    public static  function  getAvaliableRoom($from, $to, $type = null): ?array
+    {
+        if (strtotime("midnight") > strtotime("midnight $from") || strtotime("11:59pm") > strtotime("11:59pm $to") || strtotime("11:59pm $from") > strtotime("11:59pm $to"))
+            return null;
+        if (!$from)
+            $from = date("Y-m-d", strtotime("midnight"));
+        $rooms = isset($type) ? Rooms::where('room_type', $type)->get() : Rooms::all();
+        $output = [ ];
+        if(!$to) $to = date('Y-m-d', strtotime('+12 days', time()));
+        foreach ($rooms  as $room)
+        {
+            if(!self::is_booked($room->number, $from, $to)) $output[] = $room;
+        }
+        return $output;
     }
 }

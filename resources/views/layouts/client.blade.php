@@ -4,7 +4,7 @@
 <head>
     <meta charset="uft-8">
     <meta http-equiv="X-UA-Compatible" content="IE-edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}" />
     @vite('resources/css/app.css')
     <link rel="stylesheet" href="http://localhost/wemall/css/bootstrap.min.css" />
@@ -14,19 +14,23 @@
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <title>{{ config('app.name', 'CLOG') }}</title>
     <style>
-        
+        *{
+            padding:0;
+            margin: 0;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 
 @include('includes.messages')
-<body class="overflow-hidden">
-    <header class="static top-0 w-screen shadow h-12 bg-slate-200 flex inset-0">
-        <div class="h-full text-gray-600 text-center basis-1/3 flex-shrink-0  min-w-fit p-3 w-1/3">
-            Hotel Name
+<body class="relative w-full">
+    <header class="sticky top-0 w-full z-40 shadow bg-slate-200 flex inset-0 flex-col">
+        <div class="h-full text-gray-600 w-full text-center basis-1/3 flex-shrink-0  min-w-fit p-3">
+            <h1>Hotel Name</h1>
         </div>
-        <div class="w-2/3 h-full">
+        <div class="w-full h-full text-center">
             <nav class="w-full h-full">
-                <ul class="w-full h-full inline-block space-x-8">
+                <ul class="w-full h-full inline-block space-x-9">
                     @foreach ([
                         [
                             'name' => 'Home',
@@ -57,11 +61,11 @@
             </nav>
         </div>
     </header>
-    <main class="w-screen h-screen overflow-y-scroll">
+    <main class="w-full">
         {{-- @if(Auth::check())
         @endif --}}
             @yield('content')
     </main>
+@include('includes.footer')
 </body>
-
 </html>

@@ -19,8 +19,8 @@
         getNoOfDays(){
             return Math.ceil((this.valueOf() - this.today.valueOf()) / (1000 * 60 * 60 * 24))  +1
         }
-        
-        
+
+
     }
 </script>
 
@@ -51,6 +51,19 @@
                                     class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">#</span>
                                 {{ Form::number('price', '', ['class' => 'block w-full flex-1 rounded-none rounded-r-md border-gray-300
                                 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm', 'placeholder' => 'Room Price per Night', "type" => "number"]) }}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-6">
+                        <div class="col-span-3 sm:col-span-2">
+                            {{ Form::label('Room type', 'type', ['class' => 'block text-sm font-medium text-gray-700']) }}
+                            <div class="mt-1 flex rounded-md shadow-sm">
+                                <span
+                                    class="inline-flex items-center rounded-l-md border border-r-0 border-gray-300 bg-gray-50 px-3 text-sm text-gray-500">#</span>
+                                {{ Form::select('type', ['suites' => 'suites', 'room' => 'room'], ['id' => "type", "min" => 1, "url" => "none", 'class' => 'input-date
+                        block w-full flex-1 rounded-none rounded-r-md
+                        border-gray-300
+                        focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm', 'placeholder' => 'Payment']) }}
                             </div>
                         </div>
                     </div>

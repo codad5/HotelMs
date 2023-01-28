@@ -10,6 +10,13 @@ use Throwable;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $rooms = RoomController::getAllRooms()['rooms'];
+        $actives = RoomController::getAllRooms()['actives'];
+
+        return view('client.index', ["rooms" => $rooms, "actives" => $actives]);
+    }
     //
     public function book(Request $req)
     {
@@ -39,7 +46,7 @@ class UserController extends Controller
         catch(Throwable $e){
             return back()->withError($e->getMessage());
         }
-        
+
     }
     public function loginForm()
     {
